@@ -19,6 +19,9 @@ app.post('/user',function(req,res){
     res.end(JSON.stringify(req.body))
 })
 
+//del method
+// update method
+
 app.listen(app.get('port'), function () {
     console.log(`Express Started on: http://localhost:${app.get('port')}`);
 });
