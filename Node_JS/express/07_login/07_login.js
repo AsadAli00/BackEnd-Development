@@ -10,11 +10,11 @@ const app = express();
 
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(sessions({
     secret: '&jh&B7H8^&^&*&^76FG&^f',
-    esave: false,
+    resave: false,
     saveUninitialized: true
 }));
 
@@ -29,49 +29,52 @@ app.get('/', function (req, res) {
 
 
 
-app.get('/login', (req,res)=>{
+app.get('/login', (req, res) => {
     session = req.session;
-    if(session.uniqueID){
+    if (session.uniqueID) {
         res.redirect('redirects')
     }
-    else{
-        res.sendFile('login.html', {root: __dirname})
+    else {
+        res.sendFile('login.html', { root: __dirname })
     }
 });
 
 
-app.post('/login',(req,res)=> {
+app.post('/login', (req, res) => {
+
     session = req.session;
-    if(req.body.username == "admin" && req.body.password =="admin"){
+    if (req.body.username === "admin" && req.body.password === "admin") {
+        console.log("username", req.body.username);
+        console.log("password", req.body.password);
         session.uniqueID = req.body.username;
     }
-    else{
-        res.redirect('/redirects')
-    }
+    res.redirect('/redirects');
+    
 });
 
-app.get('/redirects', (req,res)=>{
+app.get('/redirects', (req, res) => {
     session = req.session;
-    if(session.uniqueID){
+    if (session.uniqueID) {
         res.redirect('/admin');
-    
+
     }
-    else{
+    else {
         res.send('who are you??')
     }
 });
 
-app.get('/admin', function (req, res) {
-    session = req.session;
-    if (session.uniqueID) {
-        res.send('Wow you are Admin.....!!  <a href="/logout">Logout</a>')
-    } else {
-        res.send('Who are you??');
-    };
-});
 app.get('/logout', function (req, res) {
     req.session.destroy(function (err) {
         console.log('Err ', err);
         res.redirect('/login');
     });
+});
+
+app.get('*', function (req, res) {
+    res.end('What Exactly you want?');
+});
+
+
+app.listen(3000, function () {
+    console.log(`Express Started on: http://localhost:${3000}`);
 });
